@@ -3,7 +3,6 @@ import { SafeAreaView, StyleSheet, StatusBar, Platform } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Avatar } from 'react-native-paper'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 import Login from './src/screens/auth/Login'
@@ -26,6 +25,7 @@ export default function App() {
       setIsSignedIn(value)
     }
     checkSignIn()
+    // console.log(isSignedIn)
   }, [])
 
   return isSignedIn ? (
