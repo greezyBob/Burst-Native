@@ -25,7 +25,15 @@ export default function App() {
       setIsSignedIn(value)
     }
     checkSignIn()
-    // console.log(isSignedIn)
+    setTimeout(async () => {
+      let userToken
+      try {
+        userToken = await clientIsAuthenticated()
+        console.log(userToken)
+      } catch (e) {
+        console.log(e)
+      }
+    }, 1000)
   }, [])
 
   return isSignedIn ? (

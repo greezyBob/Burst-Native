@@ -26,5 +26,5 @@ export const clientIsAuthenticated = async () => {
   //gets today date and make sure expiry is in the future
   // makes sure user is client
   const currentTime = Math.floor(Date.now() / 1000)
-  return currentTime < payload.exp && 'COACH' === payload.type
+  return currentTime < payload.exp && 'CLIENT' === payload.type
 }

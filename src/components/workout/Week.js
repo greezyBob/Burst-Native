@@ -1,5 +1,6 @@
-import React from 'react'
+import { React } from 'react'
 import { format } from 'date-fns'
+import axios from 'axios'
 import {
   View,
   Text,
@@ -7,11 +8,13 @@ import {
   useWindowDimensions,
   FlatList,
   Pressable,
+  RefreshControl,
 } from 'react-native'
 
-export const Week = ({ item, index, navigation }) => {
+export const Week = ({ item, index, navigation, refreshing, onRefresh }) => {
   const weekStart = format(new Date(item.week_start), 'iii do MMM')
   const { width } = useWindowDimensions()
+
   return (
     <>
       <View style={{ width: width }}>
@@ -19,13 +22,23 @@ export const Week = ({ item, index, navigation }) => {
           <Text style={styles.titleText}>Week {index + 1}</Text>
           <Text style={styles.subTitleText}>{weekStart}</Text>
         </View>
-        <View style={{ alignItems: 'center', marginTop: '10%' }}>
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: '10%',
+            flex: 1,
+            width: '100%',
+          }}
+        >
           <FlatList
             data={item.workouts}
             renderItem={({ item, index }) => (
               <Workout item={item} index={index} navigation={navigation} />
             )}
             keyExtractor={(item) => item.id}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           />
         </View>
       </View>
@@ -58,17 +71,21 @@ export const Workout = ({ item, index, navigation }) => {
 
 export const Exercise = ({ item }) => {
   return (
-    <>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1 }}>
       <Text style={{ fontSize: 15 }}>
-        {item.title} - {item.description}
+        {item.title}
       </Text>
-    </>
+      <Text style={{ fontSize: 15 }}>
+        {item.description}
+      </Text>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
+    width: 300,
     borderRadius: 8,
     marginVertical: 10,
     paddingVertical: 5,

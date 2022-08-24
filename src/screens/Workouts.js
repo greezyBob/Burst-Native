@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import { Text, View, FlatList } from 'react-native'
 import { getTokenFromLocalStorage } from '../helpers/auth'
@@ -6,8 +6,6 @@ import { getTokenFromLocalStorage } from '../helpers/auth'
 import { Week } from '../components/workout/Week'
 
 const Workouts = ({ navigation }) => {
-  
-
   const [blocks, setBlocks] = useState([])
   const [weeks, setWeeks] = useState([])
   const [loading, setLoading] = useState(false)
@@ -18,19 +16,36 @@ const Workouts = ({ navigation }) => {
   const indexFirstWeek = indexLastWeek - weeksPerPage
   const currentWeek = weeks.slice(indexFirstWeek, indexLastWeek)
 
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true)
+    try {
+      const token = await getTokenFromLocalStorage()
+      const { data } = await axios.get('http://127.0.0.1:8000/api/blocks/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setBlocks(data)
+      setWeeks(data[0].weeks)
+      setRefreshing(false)
+    } catch (error) {
+      console.log(error)
+      setRefreshing(false)
+    }
+  }, [])
+
   useEffect(() => {
     const getBlocks = async () => {
       setLoading(true)
       const token = await getTokenFromLocalStorage()
       try {
-        const { data } = await axios.get(
-          'http://127.0.0.1:8000/api/blocks/',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        const { data } = await axios.get('http://127.0.0.1:8000/api/blocks/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         setLoading(false)
         setBlocks(data)
         setWeeks(data[0].weeks)
@@ -47,7 +62,15 @@ const Workouts = ({ navigation }) => {
       {weeks.length ? (
         <FlatList
           data={weeks}
-          renderItem={({ item, index }) => <Week item={item} index={index} navigation={navigation} />}
+          renderItem={({ item, index }) => (
+            <Week
+              item={item}
+              index={index}
+              navigation={navigation}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          )}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator
