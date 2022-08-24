@@ -27,9 +27,7 @@ const Login = ({ setIsSignedIn }) => {
       )
       await AsyncStorage.setItem('burstapp', data.token)
       const auth  = await clientIsAuthenticated()
-      console.log(auth)
-      setIsSignedIn(auth)
-      
+      setIsSignedIn(auth)      
     } catch (error) {
       console.log(error)
     }

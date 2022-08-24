@@ -15,7 +15,7 @@ const WorkoutShow = ({ navigation, route }) => {
   }, [navigation])
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', width: '100%', marginTop: 10 }}>
+    <View style={{ flex: 1, alignItems: 'center', width: '100%', backgroundColor: 'white' }}>
       <FlatList
         data={item.exercises}
         renderItem={({ item, index }) => <Exercise item={item} index={index} />}
